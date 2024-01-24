@@ -35,6 +35,8 @@ The Food-101 dataset includes images of 101 different food categories, making it
 
 ![image](https://github.com/Kaviyarasu-S007/Food-Image-Classification/assets/151661034/cd077617-565f-41f3-93c5-8df8da30cae0)
 
+## To train the Model
+  - Refer ```project.tm```
 
 ## Issues and Future Improvements
 
