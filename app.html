@@ -1,0 +1,393 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customized Teachable Machine Image Model</title>
+    <style>
+        /* Customized styling */
+        body {
+            background-image: url('https://www.clker.com/cliparts/4/6/a/b/14303682411286369994orange%20peach%20pink%20dark%20light%20combination%20plus%20radiant%20mixed%20gradient%20wallpaper%20blur%20background%20android.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            font-family: 'Arial', sans-serif;
+            padding: 20px;
+            color: white;
+        }
+
+        .prediction-label {
+            margin-bottom: 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            padding: 10px;
+            background-color: rgba(255, 255, 255, 0.5); /* Semi-transparent white background */
+        }
+
+        .class-name {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .confidence-bar-container {
+            width: 100%;
+            margin-top: 10px;
+            background-color: #34495E; /* Set your desired background color */
+            border-radius: 8px;
+            overflow: hidden; /* Hides overflow from progress bar */
+        }
+
+        .confidence-bar {
+            width: 0; /* Initial width set to 0 */
+            height: 20px;
+            background-color: #5DADE2; /* Set your desired progress bar color */
+        }
+
+        button {
+            padding: 15px;
+            margin: 10px;
+            font-size: 18px;
+            cursor: pointer;
+            border: none;
+            border-radius: 8px;
+            outline: none;
+            transition: background-color 0.3s;
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        #webcam-container {
+            margin-top: 10px;
+            display: flex;
+            justify-content: center;
+            width: 200px; /* Adjust the width as needed */
+            margin-left: auto;
+            margin-right: auto;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1 align='center'>Food Image Recognition App</h1>
+    <button type="button" id="start-button" onclick="init()">Start</button>
+    <div id="webcam-container"></div>
+    <div id="label-container"></div>
+    <div id="prediction-counter">Predictions: 0</div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
+    <script type="text/javascript">
+        const URL = "https://teachablemachine.withgoogle.com/models/vIoeOsfNv/";
+        let model, webcam, labelContainer, maxPredictions, predictionCounter;
+
+        async function init() {
+            const modelURL = URL + "model.json";
+            const metadataURL = URL + "metadata.json";
+
+            model = await tmImage.load(modelURL, metadataURL);
+            maxPredictions = model.getTotalClasses();
+            predictionCounter = 0;
+
+            const flip = true;
+            webcam = new tmImage.Webcam(200, 200, flip);
+            await webcam.setup();
+            await webcam.play();
+            window.requestAnimationFrame(loop);
+
+            document.getElementById("webcam-container").appendChild(webcam.canvas);
+            labelContainer = document.getElementById("label-container");
+            for (let i = 0; i < maxPredictions; i++) {
+                const predictionLabel = document.createElement("div");
+                predictionLabel.className = "prediction-label";
+
+                const className = document.createElement("span");
+                className.className = "class-name";
+                predictionLabel.appendChild(className);
+
+                const confidenceBarContainer = document.createElement("div");
+                confidenceBarContainer.className = "confidence-bar-container";
+
+                const confidenceBar = document.createElement("div");
+                confidenceBar.className = "confidence-bar";
+                confidenceBar.style.width = "0%"; /* Initial width set to 0 */
+
+                confidenceBarContainer.appendChild(confidenceBar);
+                predictionLabel.appendChild(confidenceBarContainer);
+
+                labelContainer.appendChild(predictionLabel);
+            }
+        }
+
+        async function loop() {
+            webcam.update();
+            await predict();
+            window.requestAnimationFrame(loop);
+        }
+
+        async function predict() {
+            const prediction = await model.predict(webcam.canvas);
+
+            for (let i = 0; i < maxPredictions; i++) {
+                const classPrediction = prediction[i].className;
+                const confidence = prediction[i].probability * 100;
+
+                const predictionLabel = labelContainer.childNodes[i];
+                const classNameElement = predictionLabel.querySelector('.class-name');
+                const confidenceBar = predictionLabel.querySelector('.confidence-bar');
+
+                classNameElement.innerHTML = classPrediction;
+                confidenceBar.style.width = `${confidence}%`;
+            }
+
+            // Update prediction counter
+            predictionCounter++;
+            document.getElementById('prediction-counter').innerHTML = `Predictions: ${predictionCounter}`;
+        }
+    </script>
+
+</body>
+
+</html> -->
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customized Teachable Machine Image Model</title>
+    <style>
+        /* Customized styling */
+        body {
+            background-image: url('https://www.clker.com/cliparts/4/6/a/b/14303682411286369994orange%20peach%20pink%20dark%20light%20combination%20plus%20radiant%20mixed%20gradient%20wallpaper%20blur%20background%20android.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            font-family: 'Arial', sans-serif;
+            padding: 20px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        #left-container,
+        #right-container {
+            width: 48%;
+        }
+
+        #left-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .prediction-label {
+            margin-bottom: 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            padding: 10px;
+            background-color: rgba(255, 255, 255, 0.5); /* Semi-transparent white background */
+        }
+
+        .class-name {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .confidence-bar-container {
+            width: 100%;
+            margin-top: 10px;
+            background-color: #34495E; /* Set your desired background color */
+            border-radius: 8px;
+            overflow: hidden; /* Hides overflow from progress bar */
+        }
+
+        .confidence-bar {
+            width: 0; /* Initial width set to 0 */
+            height: 20px;
+            background-color: #5DADE2; /* Set your desired progress bar color */
+        }
+
+        .calories {
+            font-size: 16px;
+            margin-top: 5px;
+        }
+
+        button {
+            padding: 15px;
+            margin: 10px;
+            font-size: 18px;
+            cursor: pointer;
+            border: none;
+            border-radius: 8px;
+            outline: none;
+            transition: background-color 0.3s;
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        #right-container {
+            padding-left: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #34495E;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="left-container">
+        <h1 align='center'>Food Image Recognition App</h1>
+        <button type="button" id="start-button" onclick="init()">Start</button>
+        <div id="webcam-container"></div>
+        <div id="label-container"></div>
+        <div id="prediction-counter">Predictions: 0</div>
+    </div>
+
+    <div id="right-container">
+        <table>
+            <tr>
+                <th>Food Item</th>
+                <th>Calories (per serving)</th>
+            </tr>
+            <!-- Add rows dynamically using JavaScript -->
+        </table>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
+    <script type="text/javascript">
+        const URL = "https://teachablemachine.withgoogle.com/models/vIoeOsfNv/";
+        let model, webcam, labelContainer, maxPredictions, predictionCounter;
+
+        // Calories data from the provided CSV
+        const caloriesData = {
+            "adhirasam": 150,
+            "aloo_gobi": 200,
+            "basundi": 200,
+            "biryani": 300,
+            "boondi": 70,
+            "butter_chicken": 400,
+            "chapati": 70,
+            "chikki": 80,
+            "daal_puri": 150,
+            "kofta": 200,
+            "lassi": 120,
+            "naan": 150,
+            "rasgulla": 100,
+            "sheera": 150,
+            "unni_appam": 120,
+        };
+
+        async function init() {
+            const modelURL = URL + "model.json";
+            const metadataURL = URL + "metadata.json";
+
+            model = await tmImage.load(modelURL, metadataURL);
+            maxPredictions = model.getTotalClasses();
+            predictionCounter = 0;
+
+            const flip = true;
+            webcam = new tmImage.Webcam(200, 200, flip);
+            await webcam.setup();
+            await webcam.play();
+            window.requestAnimationFrame(loop);
+
+            document.getElementById("webcam-container").appendChild(webcam.canvas);
+            labelContainer = document.getElementById("label-container");
+            for (let i = 0; i < maxPredictions; i++) {
+                const predictionLabel = document.createElement("div");
+                predictionLabel.className = "prediction-label";
+
+                const className = document.createElement("span");
+                className.className = "class-name";
+                predictionLabel.appendChild(className);
+
+                const confidenceBarContainer = document.createElement("div");
+                confidenceBarContainer.className = "confidence-bar-container";
+
+                const confidenceBar = document.createElement("div");
+                confidenceBar.className = "confidence-bar";
+                confidenceBar.style.width = "0%"; /* Initial width set to 0 */
+
+                confidenceBarContainer.appendChild(confidenceBar);
+                predictionLabel.appendChild(confidenceBarContainer);
+
+                const calories = document.createElement("div");
+                calories.className = "calories";
+                predictionLabel.appendChild(calories);
+
+                labelContainer.appendChild(predictionLabel);
+            }
+
+            // Populate the table with food items and calories
+            const tableContainer = document.getElementById("right-container");
+            const table = document.createElement("table");
+            tableContainer.appendChild(table);
+
+            const tableHeader = table.createTHead();
+            const headerRow = tableHeader.insertRow(0);
+            const headerCell1 = headerRow.insertCell(0);
+            const headerCell2 = headerRow.insertCell(1);
+            headerCell1.innerHTML = "Food Item";
+            headerCell2.innerHTML = "Calories (per serving)";
+
+            const tableBody = table.createTBody();
+            for (const [foodItem, calories] of Object.entries(caloriesData)) {
+                const row = tableBody.insertRow();
+                const cell1 = row.insertCell(0);
+                const cell2 = row.insertCell(1);
+                cell1.innerHTML = foodItem;
+                cell2.innerHTML = calories;
+            }
+        }
+
+        async function loop() {
+            webcam.update();
+            await predict();
+            window.requestAnimationFrame(loop);
+        }
+
+        async function predict() {
+            const prediction = await model.predict(webcam.canvas);
+
+            for (let i = 0; i < maxPredictions; i++) {
+                const classPrediction = prediction[i].className;
+                const confidence = prediction[i].probability * 100;
+
+                const predictionLabel = labelContainer.childNodes[i];
+                const classNameElement = predictionLabel.querySelector('.class-name');
+                const confidenceBar = predictionLabel.querySelector('.confidence-bar');
+                //const caloriesElement = predictionLabel.querySelector('.calories');
+
+                classNameElement.innerHTML = classPrediction;
+                confidenceBar.style.width = `${confidence}%`;
+                //caloriesElement.innerHTML = `Calories: ${caloriesData[classPrediction] || 'N/A'}`;
+            }
+
+            // Update prediction counter
+            predictionCounter++;
+            document.getElementById('prediction-counter').innerHTML = `Predictions: ${predictionCounter}`;
+        }
+    </script>
+
+</body>
+
+</html>
